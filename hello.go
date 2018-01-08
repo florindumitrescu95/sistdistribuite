@@ -9,11 +9,7 @@ import (
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
 var broadcast = make(chan Message)           // broadcast channel
-var upgrader = websocket.Upgrader{
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
-	}
+var upgrader = websocket.Upgrader{}
 
 
 type Message struct {

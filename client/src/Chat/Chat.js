@@ -5,22 +5,31 @@ export default class Chat extends Component{
         super(props)
     }
 
-    render() {
-    const styles = {
-        chatWrapper: {
-            width: 500,
-            height: 500,
-            border: '1px solid black',
-            margin: '0 auto',
-            marginBottom: 10
-        },
-        chat: {
-            overflowY: 'scroll'
-        }
+    renderMessages = (messages) => {
+      return messages.map(message => (
+          <p>{message}</p>
+      ))
     };
+
+    render() {
+        const { messages } = this.props;
+        const styles = {
+            chatWrapper: {
+                width: 500,
+                height: 500,
+                border: '1px solid black',
+                margin: '0 auto',
+                marginBottom: 10
+            },
+            chat: {
+                overflowY: 'scroll'
+            }
+        };
         return(
             <div className='chatWrapper' style={styles.chatWrapper}>
-                <div className='chat' style={styles.chat}  />
+                <div className='chat' style={styles.chat}  >
+                    {this.renderMessages(messages)}
+                </div>
             </div>
         )
     }
