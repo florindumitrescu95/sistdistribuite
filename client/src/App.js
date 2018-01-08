@@ -45,8 +45,8 @@ class App extends Component {
   handleSending = (text) => {
       this.ws.send(
           JSON.stringify({
-              email: this.email,
-              username: this.username,
+              email: this.state.email,
+              username: this.state.username,
               message: text// Strip out html
           }
       ));
