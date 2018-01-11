@@ -19,17 +19,13 @@ class App extends Component {
     }
 
     componentWillMount() {
-        var self = this;
-        this.ws = new WebSocket('ws://' + window.location.host + '/ws');
+        let self = this;
+        let WS_PORT = ':8000';
+        this.ws = new WebSocket('ws://' + window.location.hostname + WS_PORT + '/ws');
 
         this.ws.addEventListener('open', function (e) {
-            console.log('a pornit socket-ul');
+            console.log('a pornit socket-ul', e);
         });
-
-        this.ws.onmessage = function (e) {
-            console.log(e.data);
-        };
-        this.ws.onopen = () => this.ws.send('hello');
 
         this.ws.addEventListener('message', function (e) {
             var msg = JSON.parse(e.data);
@@ -60,18 +56,17 @@ class App extends Component {
             alert("You must enter an username");
             return;
         }
-        this.setState({email: email, username: username, joined: true});
+        this.setState({email: email, username: username, joined: true}, () => {
+            this.ws.send(JSON.stringify({
+                username,
+                email
+            }))
+        });
     };
 
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-                    <h1 className="App-title">Welcome to React</h1>
-                </header>
-                <p className="App-intro">
-                    To get started, edit <code>src/App.js</code> and save to reload.
-                </p>
                 <Chat messages={this.state.messages}/>
 
                 {this.state.joined ?

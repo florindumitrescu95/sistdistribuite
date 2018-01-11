@@ -1,33 +1,23 @@
-import React, {Component } from 'react';
+import React, { Component } from 'react';
+
+import './Chat.css';
 
 export default class Chat extends Component{
-    constructor(props) {
-        super(props)
-    }
-
     renderMessages = (messages) => {
-      return messages.map(message => (
-          <p>{message}</p>
-      ))
+      return messages.map(({ email, username, message}) => (
+          <div>
+              <span>Username: {username}</span>
+              <p>{message}</p>
+          </div>
+      ));
     };
 
     render() {
         const { messages } = this.props;
-        const styles = {
-            chatWrapper: {
-                width: 500,
-                height: 500,
-                border: '1px solid black',
-                margin: '0 auto',
-                marginBottom: 10
-            },
-            chat: {
-                overflowY: 'scroll'
-            }
-        };
+
         return(
-            <div className='chatWrapper' style={styles.chatWrapper}>
-                <div className='chat' style={styles.chat}  >
+            <div className='chatWrapper'>
+                <div className='chat'  >
                     {this.renderMessages(messages)}
                 </div>
             </div>

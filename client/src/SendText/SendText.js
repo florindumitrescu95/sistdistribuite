@@ -44,8 +44,8 @@ export default class SendText extends Component{
 
         return(
             <div className='sentText' style={styles.sentText}>
-                <textarea style={styles.textarea} onChange={(event) => this.changeMessage(event)} />
-                <button style={styles.button} onClick={() => this.sendText()} > Send </button>
+                <textarea style={styles.textarea} onChange={this.changeMessage} />
+                <button style={styles.button} onClick={this.sendText} > Send </button>
             </div>
         )
     }
