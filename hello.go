@@ -4,6 +4,7 @@ import (
 		"fmt"
 		"log"
 		"net/http"
+		"strings"
 
 		"github.com/gorilla/websocket"
 )
@@ -19,8 +20,8 @@ type Client struct {
         Username string `json:"username"`
 }
 
-var clients = make(map[*websocket.Conn]Client) // connected clients
-var broadcast = make(chan Message)           // broadcast channel
+var clients = make(map[*websocket.Conn]Client)
+var broadcast = make(chan Message)
 var upgrader = websocket.Upgrader{
 		CheckOrigin: func(r *http.Request) bool {
 			return true
@@ -29,13 +30,11 @@ var upgrader = websocket.Upgrader{
 
 
 func handleConnections(w http.ResponseWriter, r *http.Request) {
-        // Upgrade initial GET request to a websocket
         ws, err := upgrader.Upgrade(w, r, nil)
         if err != nil {
                 log.Fatal(err)
         }
 
-        // Make sure we close the connection when the function returns
         defer ws.Close()
 
         var client Client
@@ -53,28 +52,26 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 
-				// Register our new client
 				clients[ws] = client;
 
 		for {
                 var msg Message
-                // Read in a new message as JSON and map it to a Message object
+
                 err := ws.ReadJSON(&msg)
                 if err != nil {
                         log.Printf("error: %v", err)
                         delete(clients, ws)
                         break
                 }
-                // Send the newly received message to the broadcast channel
+
                 broadcast <- msg
         }
 }
 
 func handleMessages() {
         for {
-                // Grab the next message from the broadcast channel
                 msg := <-broadcast
-                // Send it out to every client that is currently connected
+
                 for client := range clients {
                         err := client.WriteJSON(msg)
                         if err != nil {
@@ -97,15 +94,12 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 
 
 func main() {
-        // Create a simple file server
         fs := http.FileServer(http.Dir("./client"))
         http.Handle("/", fs)
 
-		// Configure websocket route
         http.HandleFunc("/ws", handleConnections)
 				http.HandleFunc("/users", handleUsers)
 
-		// Start listening for incoming chat messages
         go handleMessages()
 
 		log.Println("http server started on :8000")

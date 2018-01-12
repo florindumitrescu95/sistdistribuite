@@ -52,16 +52,23 @@ class App extends Component {
             alert("You must enter an email");
             return;
         }
+
+        if(email.indexOf("@") === -1 || email.indexOf(".com") === -1) {
+          alert("You must enter a valid mail");
+          return;
+        }
+
         if (!username) {
             alert("You must enter an username");
             return;
         }
-        this.setState({email: email, username: username, joined: true}, () => {
-            this.ws.send(JSON.stringify({
-                username,
-                email
-            }))
-        });
+
+        this.setState({ email: email , username: username , joined: true} , () => {
+          this.ws.send(JSON.stringify({
+              username,
+              email
+          }))
+        })
     };
 
     render() {
